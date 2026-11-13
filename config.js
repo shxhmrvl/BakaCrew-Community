@@ -1,0 +1,1 @@
+window.BAKACREW_CONFIG={API_URL:"https://script.google.com/macros/s/AKfycbxpTIMe_kSV5K-_kkEPWKwbV8xMw_bhtU6qM2IR8Bc6-8KaHWHR0yeRS1Z1pDfVZkON/exec",ANALYTICS_URL:"https://script.google.com/macros/s/AKfycbwXjmD13TUsDC-wFOF45S3wQd3roxly-s7yn7hLyvjmyyBkNZZf7ns40qS038rbi5E2/exec"};
