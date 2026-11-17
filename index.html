@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071a2c"><title>BakaCrew — Bedrock Server</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#"><img src="./bakacrew-logo.png" onerror="this.style.display='none'" alt="BakaCrew"><span>BAKA<span class="accent">CREW</span><small>BEDROCK COMMUNITY</small></span></a>
+  <nav id="mainNav"><a href="#status">Server</a><a href="#news">Updates</a><a href="#events">Events</a><a href="#guide">Guide</a></nav>
+  <div class="top-actions"><button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle color theme" title="Toggle theme">☼</button><button class="menu-btn" id="menuToggle" type="button" aria-label="Open navigation" aria-expanded="false">☰</button><button class="admin-open" id="adminOpen">Admin <span>↗</span></button></div>
+</header>
+<main>
+<section class="hero">
+  <div class="hero-copy">
+    <div class="eyebrow"><i></i> MINECRAFT BEDROCK EDITION</div>
+    <h1>Your world.<br><span>Your crew.</span></h1>
+    <p>A place to build, explore, and make memories together. Jump into the BakaCrew world.</p>
+    <div class="hero-actions"><a class="btn primary" href="#status">Join the server <b>→</b></a><a class="btn ghost" href="#guide">How to join</a></div>
+    <div class="hero-note"><span class="pulse"></span> Community powered. Adventure ready.</div>
+  </div>
+  <div class="hero-art"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="cube">BC</div><div class="float-tag tag-a">✦ BUILD</div><div class="float-tag tag-b">⚔ EXPLORE</div><div class="float-tag tag-c">♡ CONNECT</div></div>
+</section>
+<section class="server-panel" id="status">
+  <div class="server-heading"><div><div class="eyebrow">CONNECTION DETAILS</div><h2>Ready to join?</h2><p>Use these details in Minecraft Bedrock.</p></div><div class="status-pill" id="statusPill"><i></i><span>Checking status…</span></div></div>
+  <div class="connect-grid">
+    <div class="connect-card"><label>SERVER ADDRESS</label><div class="copyline"><strong id="serverIp">play.example.net</strong><button data-copy="ip" aria-label="Copy server address">Copy</button></div></div>
+    <div class="connect-card"><label>PORT</label><div class="copyline"><strong id="serverPort">19132</strong><button data-copy="port" aria-label="Copy port">Copy</button></div></div>
+    <div class="connect-card players"><label>PLAYERS ONLINE</label><strong id="players">—</strong><small id="playerMax">Live server data</small></div>
+  </div>
+  <div class="status-foot"><span id="statusMessage">Server status will appear here.</span><span class="status-tools"><span id="lastChecked">Auto refresh · 60 sec</span><button class="inline-action" id="refreshStatus" type="button">↻ Refresh</button></span></div>
+</section>
+<section class="section" id="news">
+  <div class="section-head"><div><div class="eyebrow">WHAT'S HAPPENING</div><h2>Latest updates</h2></div><span class="section-mark">01 / NEWS</span></div>
+  <div class="discovery-tools"><label class="search-box"><span>⌕</span><input id="newsSearch" type="search" placeholder="Search updates..." aria-label="Search updates"></label><select id="newsFilter" aria-label="Filter updates"><option value="all">All categories</option></select><span class="result-count" id="newsCount"></span></div>
+  <div class="news-grid" id="newsList" aria-live="polite"></div>
+</section>
+<section class="section events-section" id="events">
+  <div class="section-head"><div><div class="eyebrow">SAVE THE DATE</div><h2>Community events</h2></div><span class="section-mark">02 / EVENTS</span></div>
+  <div class="discovery-tools event-tools"><label class="search-box"><span>⌕</span><input id="eventSearch" type="search" placeholder="Find an event..." aria-label="Search events"></label><span class="result-count" id="eventCount"></span></div>
+  <div class="events-list" id="eventsList" aria-live="polite"></div>
+</section>
+<section class="guide" id="guide">
+  <div><div class="eyebrow">NEW HERE?</div><h2>Three steps.<br><span>One adventure.</span></h2><p>Join our Bedrock server in less than a minute.</p></div>
+  <div class="steps"><div><b>01</b><span><strong>Open Minecraft</strong><small>Launch Minecraft Bedrock Edition.</small></span></div><div><b>02</b><span><strong>Add a server</strong><small>Go to Play → Servers → Add Server.</small></span></div><div><b>03</b><span><strong>Enter & play</strong><small>Paste our address and port, then join!</small></span></div><button class="btn primary guide-copy" id="copyJoin" type="button">Copy join details ↗</button></div>
+</section>
+</main>
+<footer><a class="brand footer-brand" href="#"><span>BAKA<span class="accent">CREW</span><small>BEDROCK COMMUNITY</small></span></a><span>Built for the community. © <span id="year"></span> BakaCrew</span><a href="#top">Back to top ↑</a></footer>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="modal hidden" id="adminModal">
+ <div class="modal-card login-card" id="loginPanel"><button class="close" data-close>×</button><div class="eyebrow">BAKACREW CONTROL</div><h2>Admin access</h2><p>Enter your access PIN to manage the server website.</p><form id="loginForm"><input id="pinInput" type="password" inputmode="numeric" maxlength="12" placeholder="Enter PIN" required><button class="btn primary full">Unlock dashboard →</button><small class="error" id="loginError"></small></form></div>
+ <div class="modal-card dashboard hidden" id="dashboardPanel"><div class="dash-head"><div><div class="eyebrow">CONTROL CENTER</div><h2>Website manager</h2></div><button class="close" data-close>×</button></div>
+ <div class="dash-tabs"><button class="tab active" data-tab="general">General</button><button class="tab" data-tab="newsTab">News</button><button class="tab" data-tab="eventsTab">Events</button><button class="tab" data-tab="backup">Backup</button></div>
+ <div class="tab-pane" id="general"><form id="settingsForm" class="admin-form"><label>Server IP<input id="editIp" placeholder="play.example.net" required></label><label>Server port<input id="editPort" type="number" min="1" max="65535" required></label><label>Server name<input id="editName" placeholder="BakaCrew"></label><label class="check"><input id="maintenance" type="checkbox"> Enable maintenance notice</label><label>Maintenance message<input id="maintenanceText" placeholder="Server is under maintenance."></label><button class="btn primary">Save settings</button></form></div>
+ <div class="tab-pane hidden" id="newsTab"><form id="newsForm" class="admin-form"><label>Title<input id="newsTitle" required placeholder="Update title"></label><label>Category<input id="newsCategory" placeholder="ANNOUNCEMENT"></label><label>Content<textarea id="newsBody" rows="3" required placeholder="Write your update..."></textarea></label><button class="btn primary">Publish update</button></form><div id="adminNews" class="manage-list"></div></div>
+ <div class="tab-pane hidden" id="eventsTab"><form id="eventForm" class="admin-form"><label>Event name<input id="eventTitle" required placeholder="Community build night"></label><label>Date<input id="eventDate" type="date" required></label><label>Start time<input id="eventTime" type="time"></label><label>Time / details<input id="eventDetails" placeholder="Survival world · Bring your friends"></label><button class="btn primary">Add event</button></form><div id="adminEvents" class="manage-list"></div></div>
+ <div class="tab-pane hidden" id="backup"><div class="backup-copy"><h3>Keep your content safe</h3><p>Export your website content to a JSON file. Import it later on this browser to restore your changes.</p><button class="btn primary" id="exportBtn">↓ Export backup JSON</button><label class="import-btn">↑ Import backup JSON<input id="importFile" type="file" accept=".json,application/json" hidden></label><p class="hint">Note: this simple version stores changes in this browser only. To publish updates for everyone, upload the exported backup and updated site files to GitHub Pages.</p></div></div>
+ <div class="dash-foot"><span id="saveStatus">Changes are saved in this browser.</span><button id="logoutBtn" class="text-btn">Log out</button></div>
+ </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+</body></html>
