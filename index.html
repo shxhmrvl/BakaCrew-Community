@@ -4,180 +4,263 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#061522">
-  <meta name="description" content="BakaCrew Bedrock Network — play, build, track live server stats, and connect with the Malaysia & global community.">
-  <title>BakaCrew Network | Bedrock Edition</title>
+  <meta name="description" content="BakaCrew Bedrock Network — multi-page Minecraft Bedrock community portal, live server stats, 9PM MYT tracker, rules, news & leaderboards.">
+  <title>BakaCrew Network | Home</title>
   <link rel="icon" href="./bakacrew-logo.png">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Announcement Bar -->
+  <!-- Top Utility Bar (Hypixel-style) -->
+  <div class="utility-bar">
+    <div class="wrap utility-inner">
+      <div class="utility-left">
+        <span class="utility-pill">
+          <span class="live-dot" id="topLiveDot"></span>
+          <span id="topStatusText">Checking server…</span>
+        </span>
+        <span class="utility-sep">•</span>
+        <button class="utility-ip" data-copy="address" title="Click to copy Bedrock IP">
+          IP: <strong id="topIpText">baka.skyes.me</strong> <small>:19205</small> <span>COPY</span>
+        </button>
+      </div>
+      <div class="utility-right">
+        <span class="utility-myt">◷ MYT (GMT+8): <strong id="topMytClock">--:--:--</strong></span>
+        <button class="utility-btn" id="adminTopBtn">Admin</button>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Switch light/dark theme">☾</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Announcement Strip -->
   <div class="announcement" id="announcement">
     <span class="announce-dot"></span>
-    <span id="announcementText">WELCOME TO BAKACREW NETWORK</span>
-    <a href="#telemetry">9PM MYT Stats <b>↗</b></a>
+    <span id="announcementText">WELCOME TO BAKACREW BEDROCK NETWORK · DAILY 9:00 PM MYT TRACKING ACTIVE</span>
+    <a href="#/telemetry" data-page="telemetry">View 9PM Stats <b>↗</b></a>
     <button id="dismissAnnouncement" aria-label="Dismiss announcement">×</button>
   </div>
 
-  <!-- Sticky Header -->
+  <!-- Main Navigation Header -->
   <header class="site-header">
-    <a class="brand" href="#home">
-      <img src="./bakacrew-logo.png" onerror="this.style.display='none'" alt="BakaCrew logo">
-      <span>BAKA<span>CREW</span><small>BEDROCK NETWORK</small></span>
-    </a>
+    <div class="wrap header-inner">
+      <a class="brand" href="#/home" data-page="home">
+        <img src="./bakacrew-logo.png" onerror="this.style.display='none'" alt="BakaCrew logo">
+        <span>BAKA<span>CREW</span><small>BEDROCK NETWORK</small></span>
+      </a>
 
-    <nav class="desktop-nav" aria-label="Primary navigation">
-      <a href="#games">Experiences</a>
-      <a href="#telemetry">9PM Stats</a>
-      <a href="#wiki">Player Guide</a>
-      <a href="#leaderboard">Spotlight</a>
-      <a href="#news">Intel</a>
-      <a href="#status">Connect</a>
-    </nav>
+      <nav class="desktop-nav" aria-label="Main pages">
+        <a href="#/home" data-page="home" class="active">Home</a>
+        <a href="#/games" data-page="games">Games</a>
+        <a href="#/telemetry" data-page="telemetry">9PM Stats</a>
+        <a href="#/news" data-page="news">News</a>
+        <a href="#/leaderboards" data-page="leaderboards">Leaderboards</a>
+        <a href="#/wiki" data-page="wiki">Rules &amp; Guide</a>
+        <a href="#/community" data-page="community">Community</a>
+      </nav>
 
-    <div class="header-actions">
-      <div class="header-status-pill" id="headerStatusPill" title="Live Bedrock server status">
-        <span class="live-dot" id="headerDot"></span>
-        <span id="headerOnlineCount">—</span>
+      <div class="header-actions">
+        <a class="header-play" id="headerLaunchBtn" href="minecraft://?addExternalServer=BakaCrew|baka.skyes.me:19205">
+          Play Now <b>↗</b>
+        </a>
+        <button class="menu-toggle" id="menuToggle" aria-label="Open menu">☰</button>
       </div>
-      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Switch light/dark theme">☾</button>
-      <a class="header-play" href="#status">Join Server <b>↗</b></a>
-      <button class="menu-toggle" id="menuToggle" aria-label="Open menu">☰</button>
     </div>
   </header>
 
   <!-- Mobile Dropdown Menu -->
   <div class="mobile-menu hidden" id="mobileMenu">
-    <a href="#games">Experiences</a>
-    <a href="#telemetry">9PM MYT Stats</a>
-    <a href="#wiki">Player Guide &amp; Rules</a>
-    <a href="#leaderboard">Community Spotlight</a>
-    <a href="#news">Latest Intel</a>
-    <a href="#events">Events</a>
-    <a href="#community">Community</a>
-    <a href="#status">Server Connect</a>
+    <a href="#/home" data-page="home">Home</a>
+    <a href="#/games" data-page="games">Games &amp; Realms</a>
+    <a href="#/telemetry" data-page="telemetry">9PM MYT Server Stats</a>
+    <a href="#/news" data-page="news">News &amp; Announcements</a>
+    <a href="#/leaderboards" data-page="leaderboards">Leaderboards</a>
+    <a href="#/wiki" data-page="wiki">Rules &amp; Player Guide</a>
+    <a href="#/community" data-page="community">Community &amp; Events</a>
     <button id="mobileAdmin">Admin Access</button>
   </div>
 
-  <main id="home">
-    <!-- Hero Section -->
-    <section class="hero">
-      <div class="hero-bg-grid"></div>
-      <div class="hero-orb orb-1"></div>
-      <div class="hero-orb orb-2"></div>
-
-      <div class="hero-content">
-        <div class="eyebrow">
-          <span class="live-dot"></span> MINECRAFT BEDROCK NETWORK
-          <span class="eyebrow-line"></span> MYT · GMT+8
-        </div>
-        <h1>FIND YOUR<br><em>CREW.</em> BUILD<br>YOUR <em>WORLD.</em></h1>
-        <p class="hero-lead">
-          A community-first Minecraft Bedrock world built around friendship, creativity, and late-night sessions. Cross-play ready on Mobile, PC, and Console.
-        </p>
-
-        <div class="hero-ctas">
-          <a class="button button-primary" id="heroLaunchBtn" href="minecraft://?addExternalServer=BakaCrew|baka.skyes.me:19205">
-            Launch Minecraft <span>↗</span>
-          </a>
-          <button class="button button-glass" data-copy="address">
-            Copy IP: <span id="heroCopyAddr">baka.skyes.me</span>
-          </button>
-          <a class="button button-outline" href="#telemetry">Daily 9PM Stats <span>↓</span></a>
-        </div>
-
-        <div class="hero-meta">
-          <span><i class="tiny-check"></i> BEDROCK 1.21+ READY</span>
-          <span><i class="tiny-check"></i> 9PM MYT DAILY TRACKING</span>
-          <span><i class="tiny-check"></i> CROSS-PLATFORM</span>
-        </div>
+  <!-- Breadcrumb Bar (visible on sub-pages) -->
+  <div class="breadcrumb-bar hidden" id="breadcrumbBar">
+    <div class="wrap breadcrumb-inner">
+      <div class="breadcrumb-trail">
+        <a href="#/home" data-page="home">Home</a>
+        <span>/</span>
+        <strong id="breadcrumbCurrent">Page</strong>
       </div>
+      <span class="breadcrumb-meta">BakaCrew Bedrock · Port 19205</span>
+    </div>
+  </div>
 
-      <div class="hero-visual" id="heroVisual">
-        <div class="visual-glow"></div>
-        <div class="visual-ring ring-a"></div>
-        <div class="visual-ring ring-b"></div>
-
-        <div class="pixel-emblem" id="pixelEmblem">
-          <div class="emblem-top"></div>
-          <strong>BC</strong>
-          <small>NETWORK</small>
-        </div>
-
-        <div class="float-chip chip-top">✦ PLAY TOGETHER</div>
-        <div class="float-chip chip-side">
-          NEXT 9PM MYT<br>
-          <b id="heroCountdown">--:--:--</b>
-        </div>
-        <div class="float-chip chip-bottom">
-          <span class="live-dot" id="heroChipDot"></span>
-          <span id="heroChipText">CHECKING SERVER…</span>
-        </div>
-        <div class="visual-coord">01 / BAKACREW.MYT</div>
-      </div>
-
-      <div class="hero-bottom">
-        <span>YOUR NEXT ADVENTURE STARTS HERE</span>
-        <span>SCROLL TO EXPLORE ↓</span>
-      </div>
-    </section>
-
-    <!-- Quick Stats Bar -->
-    <section class="quick-stats wrap">
-      <div class="stat-intro">
-        <span class="eyebrow">LIVE TELEMETRY</span>
-        <strong>One address.<br>Many memories.</strong>
-      </div>
-      <div class="quick-stat">
-        <span class="stat-icon">◉</span>
-        <small>SERVER STATUS</small>
-        <b id="heroStatus">Checking…</b>
-        <span id="heroStatusSub">Bedrock Query API</span>
-      </div>
-      <div class="quick-stat">
-        <span class="stat-icon">♟</span>
-        <small>PLAYERS ONLINE</small>
-        <b id="heroPlayers">—</b>
-        <span>Live player count</span>
-      </div>
-      <div class="quick-stat">
-        <span class="stat-icon">◷</span>
-        <small>MALAYSIA TIME (GMT+8)</small>
-        <b id="mytClock">--:--:--</b>
-        <span id="mytDateLabel">Daily catch @ 9:00 PM</span>
-      </div>
-    </section>
-
-    <!-- Experiences / Game Modes -->
-    <section class="section wrap" id="games">
-      <div class="section-heading">
-        <div>
-          <span class="eyebrow">PICK YOUR ADVENTURE / 01</span>
-          <h2>Explore the <em>network.</em></h2>
-          <p>Click any experience card to inspect features, tips, and how to jump in.</p>
-        </div>
-        <span class="heading-index">01 — EXPERIENCES</span>
-      </div>
-      <div class="game-grid" id="gamesGrid"></div>
-    </section>
-
-    <!-- Daily 9PM MYT Server Statistics & Telemetry -->
-    <section class="telemetry-section" id="telemetry">
-      <div class="wrap">
-        <div class="section-heading">
-          <div>
-            <span class="eyebrow">DAILY 9:00 PM GMT+8 (MALAYSIA) TRACKER / 02</span>
-            <h2>Server <em>statistics.</em></h2>
-            <p>Tracking daily player joins captured every day at the 9:00 PM MYT peak window.</p>
-          </div>
-          <div class="telemetry-controls">
-            <div class="range-pills" role="group" aria-label="Chart range">
-              <button class="range-pill active" data-range="7">7D</button>
-              <button class="range-pill" data-range="14">14D</button>
-              <button class="range-pill" data-range="30">30D</button>
+  <main id="appMain">
+    <!-- ==================== PAGE 1: HOME ==================== -->
+    <section class="page-view" id="view-home" data-view="home">
+      <div class="hero-banner">
+        <div class="hero-bg-grid"></div>
+        <div class="wrap hero-grid">
+          <div class="hero-copy">
+            <div class="eyebrow"><span class="live-dot"></span> MINECRAFT BEDROCK NETWORK · MYT GMT+8</div>
+            <h1>BUILD YOUR <em>WORLD.</em><br>PLAY WITH THE <em>CREW.</em></h1>
+            <p class="hero-lead">
+              The official BakaCrew Bedrock portal. Catch the latest server updates, check daily 9:00 PM Malaysia Time player stats, read the rules, and jump straight into the world.
+            </p>
+            <div class="hero-ctas">
+              <a class="button button-primary" id="heroLaunchBtn" href="minecraft://?addExternalServer=BakaCrew|baka.skyes.me:19205">
+                Launch Minecraft <span>↗</span>
+              </a>
+              <button class="button button-glass" data-copy="address">
+                Copy IP: <span id="heroCopyAddr">baka.skyes.me</span>
+              </button>
+              <a class="button button-outline" href="#/wiki" data-page="wiki">How to Join →</a>
             </div>
-            <button class="button button-outline-dark" id="captureNowBtn" title="Record current live player count for today's MYT snapshot">
-              ↻ Sync Snapshot
-            </button>
+          </div>
+
+          <div class="hero-status-card" id="heroVisual">
+            <div class="emblem-row">
+              <div class="pixel-emblem" id="pixelEmblem">
+                <div class="emblem-top"></div>
+                <strong>BC</strong>
+                <small>BEDROCK</small>
+              </div>
+              <div class="hero-card-stats">
+                <span class="eyebrow">SERVER PULSE</span>
+                <h3 id="homeStatusBadge">Checking…</h3>
+                <p><strong id="homePlayersCount">—</strong> players online right now</p>
+                <div class="countdown-box">
+                  <small>NEXT 9:00 PM MYT SNAPSHOT</small>
+                  <b id="homeCountdown">--:--:--</b>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hypixel-style 2-Column Home Layout: Main News Feed + Sidebar -->
+      <div class="wrap portal-layout">
+        <div class="portal-main">
+          <div class="portal-block-head">
+            <div>
+              <span class="eyebrow">FRONT PAGE INTEL</span>
+              <h2>Latest Announcements</h2>
+            </div>
+            <a class="text-link" href="#/news" data-page="news">All News &amp; Updates →</a>
+          </div>
+          <div class="home-news-feed" id="homeNewsFeed"></div>
+
+          <div class="portal-block-head" style="margin-top:42px;">
+            <div>
+              <span class="eyebrow">NETWORK EXPERIENCES</span>
+              <h2>Featured Realms &amp; Modes</h2>
+            </div>
+            <a class="text-link" href="#/games" data-page="games">Explore All Games →</a>
+          </div>
+          <div class="game-grid two-col" id="homeGamesPreview"></div>
+        </div>
+
+        <aside class="portal-sidebar">
+          <div class="side-widget connect-widget">
+            <div class="widget-head">
+              <strong>SERVER CONNECTION</strong>
+              <span class="status-tag" id="sideStatusTag">CHECKING</span>
+            </div>
+            <div class="side-ip-box">
+              <div>
+                <small>BEDROCK ADDRESS</small>
+                <strong id="sideAddress">baka.skyes.me</strong>
+              </div>
+              <button data-copy="address">COPY</button>
+            </div>
+            <div class="side-ip-row">
+              <div>
+                <small>PORT</small>
+                <strong id="sidePort">19205</strong>
+              </div>
+              <div>
+                <small>ONLINE</small>
+                <strong id="sidePlayers">—</strong>
+              </div>
+            </div>
+            <a class="button button-primary full-btn" id="sideLaunchBtn" href="minecraft://?addExternalServer=BakaCrew|baka.skyes.me:19205">
+              Add &amp; Launch Bedrock ↗
+            </a>
+          </div>
+
+          <div class="side-widget">
+            <div class="widget-head">
+              <strong>9:00 PM MYT TRACKER</strong>
+              <a href="#/telemetry" data-page="telemetry">Details ↗</a>
+            </div>
+            <div class="mini-stat-pair">
+              <div>
+                <small>TODAY'S CATCH</small>
+                <b id="sideTodayCatch">—</b>
+              </div>
+              <div>
+                <small>7D PEAK</small>
+                <b id="sidePeak7d">—</b>
+              </div>
+            </div>
+            <div class="mini-bars" id="sideMiniBars"></div>
+            <p class="widget-note">Daily snapshot captured at 21:00 Malaysia Time (GMT+8).</p>
+          </div>
+
+          <div class="side-widget">
+            <div class="widget-head">
+              <strong>UPCOMING EVENTS (MYT)</strong>
+              <a href="#/community" data-page="community">All ↗</a>
+            </div>
+            <div class="side-events-list" id="sideEventsList"></div>
+          </div>
+
+          <div class="side-widget" id="homePollWidget"></div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ==================== PAGE 2: GAMES ==================== -->
+    <section class="page-view hidden" id="view-games" data-view="games">
+      <div class="page-banner">
+        <div class="wrap">
+          <span class="eyebrow">BAKACREW NETWORK / GAMES</span>
+          <h1>Explore Games &amp; <em>Realms.</em></h1>
+          <p>Browse all experiences on BakaCrew Bedrock. Click any card for rules, features, and tips.</p>
+        </div>
+      </div>
+
+      <div class="wrap page-body">
+        <div class="toolbar">
+          <input class="search-input" id="gameSearch" type="search" placeholder="Search games, survival, creative…">
+          <div class="filter-group" id="gameFilters">
+            <button class="filter-chip active" data-gcat="ALL">All</button>
+            <button class="filter-chip" data-gcat="ADVENTURE">Survival</button>
+            <button class="filter-chip" data-gcat="BUILD">Creative</button>
+            <button class="filter-chip" data-gcat="EVENTS">Events</button>
+            <button class="filter-chip" data-gcat="NETWORK">Network</button>
+          </div>
+        </div>
+        <div class="game-grid" id="gamesGrid"></div>
+      </div>
+    </section>
+
+    <!-- ==================== PAGE 3: 9PM STATS & SERVER STATUS ==================== -->
+    <section class="page-view hidden" id="view-telemetry" data-view="telemetry">
+      <div class="page-banner">
+        <div class="wrap">
+          <span class="eyebrow">DAILY 9:00 PM GMT+8 (MALAYSIA TIME) TELEMETRY</span>
+          <h1>Server <em>Statistics</em> &amp; Live Status.</h1>
+          <p>Tracking daily player joins captured every day at 9:00 PM MYT alongside live Bedrock query telemetry.</p>
+        </div>
+      </div>
+
+      <div class="wrap page-body">
+        <div class="telemetry-top-bar">
+          <div class="range-pills" role="group" aria-label="Chart range">
+            <button class="range-pill active" data-range="7">7 Days</button>
+            <button class="range-pill" data-range="14">14 Days</button>
+            <button class="range-pill" data-range="30">30 Days</button>
+          </div>
+          <div class="telemetry-actions">
+            <button class="button button-outline-dark" id="manualRefreshBtn">↻ Refresh Live Query</button>
+            <button class="button button-primary" id="captureNowBtn">◎ Sync Today's Snapshot</button>
           </div>
         </div>
 
@@ -200,7 +283,7 @@
           <div class="kpi-card accent-card">
             <small>NEXT 9:00 PM MYT CAPTURE</small>
             <b id="statNextCountdown">--h --m --s</b>
-            <span id="statCaptureNote">Auto-captures when portal is open @ 21:00 MYT</span>
+            <span id="statCaptureNote">Live MYT: <strong id="mytClock">--:--:--</strong> (<span id="mytDateLabel">--</span>)</span>
           </div>
         </div>
 
@@ -209,14 +292,14 @@
             <div class="chart-header">
               <div>
                 <strong>DAILY PLAYER ATTENDANCE · 9:00 PM MYT</strong>
-                <small id="chartSubtitle">Hover over any day to inspect the 9:00 PM Malaysia Time snapshot</small>
+                <small>Hover any data point to view exact 9:00 PM Malaysia Time player count</small>
               </div>
               <div class="chart-legend">
                 <span><i class="legend-dot captured"></i> 9PM MYT Catch</span>
                 <span><i class="legend-dot pending"></i> Pre-9PM / Live</span>
               </div>
             </div>
-            <div class="chart-stage" id="chartStage">
+            <div class="chart-stage">
               <svg id="telemetryChart" viewBox="0 0 760 270" preserveAspectRatio="none" aria-label="Daily 9PM MYT player count chart"></svg>
               <div class="chart-tooltip hidden" id="chartTooltip"></div>
             </div>
@@ -228,45 +311,107 @@
               <span>GMT+8</span>
             </div>
             <div class="snapshot-log-list" id="snapshotLogList"></div>
-            <p class="data-note">
-              Browser-persisted telemetry: auto-records live server count at 21:00 MYT and can be updated or exported in Admin.
-            </p>
+            <p class="data-note">Auto-records at 21:00 MYT while open. Admins can also log or export JSON backups.</p>
+          </div>
+        </div>
+
+        <div class="server-panel">
+          <div class="server-copy">
+            <span class="eyebrow">BEDROCK CONNECTION DETAILS</span>
+            <h2>Live Query &amp; Join Details</h2>
+            <p>Use the address and port below in Minecraft Bedrock Edition, or click Launch directly.</p>
+            <div class="server-status-line">
+              <span class="status-indicator" id="statusIndicator"></span>
+              <strong id="statusLabel">Checking server…</strong>
+              <small id="statusUpdated">Auto refresh · 60 sec</small>
+            </div>
+            <p class="maintenance-note hidden" id="maintenanceNote"></p>
+            <div class="server-cta-row">
+              <a class="button button-primary" id="connectLaunchBtn" href="minecraft://?addExternalServer=BakaCrew|baka.skyes.me:19205">
+                Add &amp; Launch in Minecraft ↗
+              </a>
+            </div>
+          </div>
+
+          <div class="server-connect">
+            <div class="connect-title">
+              <span>SERVER CONNECTION</span>
+              <span class="connect-version" id="connectVersion">BEDROCK</span>
+            </div>
+            <div class="connect-field">
+              <label>SERVER NAME</label>
+              <div>
+                <strong id="serverDisplayName">BakaCrew Network</strong>
+                <button data-copy="name">COPY</button>
+              </div>
+            </div>
+            <div class="connect-field">
+              <label>SERVER ADDRESS / IP</label>
+              <div>
+                <strong id="serverAddress">baka.skyes.me</strong>
+                <button data-copy="address">COPY</button>
+              </div>
+            </div>
+            <div class="connect-row">
+              <div class="connect-field">
+                <label>BEDROCK PORT</label>
+                <div>
+                  <strong id="serverPort">19205</strong>
+                  <button data-copy="port">COPY</button>
+                </div>
+              </div>
+              <div class="connect-field">
+                <label>PLAYERS ONLINE</label>
+                <div>
+                  <strong id="serverPlayers">—</strong>
+                </div>
+              </div>
+            </div>
+            <div class="connect-footer">
+              <span id="serverMessage">Connecting to status provider…</span>
+              <span>MC BEDROCK</span>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Interactive Player Guide, Rules & Commands Hub -->
-    <section class="section wrap" id="wiki">
-      <div class="section-heading">
-        <div>
-          <span class="eyebrow">PLAYER INFORMATION HUB / 03</span>
-          <h2>Everything you <em>need to know.</em></h2>
-          <p>Rules, useful Bedrock commands, joining steps, and quick answers for new &amp; veteran crew members.</p>
-        </div>
-        <div class="wiki-tabs" role="tablist">
-          <button class="wiki-tab active" data-wiki="rules">Server Rules</button>
-          <button class="wiki-tab" data-wiki="commands">Commands</button>
-          <button class="wiki-tab" data-wiki="join">How to Join</button>
-          <button class="wiki-tab" data-wiki="faq">FAQ</button>
+    <!-- ==================== PAGE 4: NEWS ==================== -->
+    <section class="page-view hidden" id="view-news" data-view="news">
+      <div class="page-banner">
+        <div class="wrap">
+          <span class="eyebrow">PATCH NOTES &amp; ANNOUNCEMENTS</span>
+          <h1>Latest <em>Intel</em> &amp; Updates.</h1>
+          <p>Stay up to date with BakaCrew server changes, community events, and maintenance notices.</p>
         </div>
       </div>
 
-      <div class="wiki-panel" id="wikiContent"></div>
+      <div class="wrap page-body">
+        <div class="toolbar">
+          <input class="search-input" id="newsSearch" type="search" placeholder="Search news articles…">
+          <div class="filter-group" id="newsFilters">
+            <button class="filter-chip active" data-cat="ALL">All</button>
+            <button class="filter-chip" data-cat="WELCOME">Welcome</button>
+            <button class="filter-chip" data-cat="UPDATE">Updates</button>
+            <button class="filter-chip" data-cat="EVENT">Events</button>
+          </div>
+        </div>
+        <div id="newsFeatured"></div>
+        <div class="news-grid" id="newsGrid"></div>
+      </div>
     </section>
 
-    <!-- Leaderboard / Community Spotlight -->
-    <section class="leader-section" id="leaderboard">
-      <div class="wrap">
-        <div class="section-heading">
-          <div>
-            <span class="eyebrow">COMMUNITY SPOTLIGHT / 04</span>
-            <h2>Players making <em>moves.</em></h2>
-            <p>Celebrate the builders, explorers, and regulars shaping BakaCrew.</p>
-          </div>
-          <span class="heading-index">CREW RANKINGS</span>
+    <!-- ==================== PAGE 5: LEADERBOARDS ==================== -->
+    <section class="page-view hidden" id="view-leaderboards" data-view="leaderboards">
+      <div class="page-banner">
+        <div class="wrap">
+          <span class="eyebrow">COMMUNITY SPOTLIGHT</span>
+          <h1>Crew <em>Leaderboards</em> &amp; MVPs.</h1>
+          <p>Celebrating top builders, active 9PM MYT regulars, and standout BakaCrew members.</p>
         </div>
+      </div>
 
+      <div class="wrap page-body">
         <div class="leader-layout">
           <div class="leader-feature">
             <span class="feature-kicker">✦ COMMUNITY MVP</span>
@@ -280,7 +425,7 @@
           <div class="leader-table-wrap">
             <div class="table-head">
               <strong>COMMUNITY RANKINGS</strong>
-              <span>CURATED HIGHLIGHTS</span>
+              <input class="mini-search" id="leaderSearch" type="search" placeholder="Filter player…">
             </div>
             <div class="leader-table" id="leaderRows"></div>
             <p class="data-note">Curated community showcase · Updated by BakaCrew staff.</p>
@@ -289,140 +434,87 @@
       </div>
     </section>
 
-    <!-- News / Intel -->
-    <section class="section wrap" id="news">
-      <div class="section-heading">
-        <div>
-          <span class="eyebrow">FRESH FROM THE WORLD / 05</span>
-          <h2>Latest <em>intel.</em></h2>
-          <p>Patch notes, announcements, and what’s evolving across the network.</p>
-        </div>
-        <div class="news-filters" id="newsFilters">
-          <button class="filter-chip active" data-cat="ALL">All</button>
-          <button class="filter-chip" data-cat="WELCOME">Welcome</button>
-          <button class="filter-chip" data-cat="UPDATE">Updates</button>
-          <button class="filter-chip" data-cat="EVENT">Events</button>
+    <!-- ==================== PAGE 6: RULES & PLAYER GUIDE ==================== -->
+    <section class="page-view hidden" id="view-wiki" data-view="wiki">
+      <div class="page-banner">
+        <div class="wrap">
+          <span class="eyebrow">KNOWLEDGE BASE &amp; POLICIES</span>
+          <h1>Rules &amp; <em>Player Guide.</em></h1>
+          <p>Everything you need to start playing smoothly and stay respectful in BakaCrew.</p>
         </div>
       </div>
-      <div class="news-grid" id="newsGrid"></div>
-    </section>
 
-    <!-- Events Band -->
-    <section class="event-band" id="events">
-      <div class="wrap event-layout">
-        <div>
-          <span class="eyebrow">GET IT ON YOUR CALENDAR / 06</span>
-          <h2>Make room for<br><em>good times.</em></h2>
-          <p>Community events, build nights, boss raids, and 9PM MYT crew sessions.</p>
-          <div class="event-timezone-badge">◷ All event times in MYT (GMT+8)</div>
-        </div>
-        <div class="event-list" id="eventList"></div>
+      <div class="wrap page-body wiki-layout">
+        <aside class="wiki-sidebar" role="tablist">
+          <button class="wiki-tab active" data-wiki="rules">01 · Server Rules</button>
+          <button class="wiki-tab" data-wiki="commands">02 · Bedrock Commands</button>
+          <button class="wiki-tab" data-wiki="join">03 · How to Join</button>
+          <button class="wiki-tab" data-wiki="faq">04 · FAQ</button>
+          <button class="wiki-tab" data-wiki="staff">05 · Staff &amp; Support</button>
+        </aside>
+        <div class="wiki-panel" id="wikiContent"></div>
       </div>
     </section>
 
-    <!-- Community Card -->
-    <section class="community-section wrap" id="community">
-      <div class="community-card">
-        <div class="community-art">
-          <div class="community-orbit"></div>
-          <div class="community-cube">BC</div>
-        </div>
-        <div class="community-copy">
-          <span class="eyebrow">MORE THAN A SERVER / 07</span>
-          <h2>Good worlds are<br>built <em>together.</em></h2>
-          <p>Meet fellow Bedrock players, share screenshots, propose ideas, report bugs, and hang out before the 9PM Malaysia Time rush.</p>
-          <div class="community-links" id="communityLinks"></div>
+    <!-- ==================== PAGE 7: COMMUNITY & EVENTS ==================== -->
+    <section class="page-view hidden" id="view-community" data-view="community">
+      <div class="page-banner">
+        <div class="wrap">
+          <span class="eyebrow">BAKACREW SOCIAL HUB</span>
+          <h1>Community, <em>Events</em> &amp; Polls.</h1>
+          <p>Join our social channels, check upcoming 9PM MYT sessions, and vote in community polls.</p>
         </div>
       </div>
-    </section>
 
-    <!-- Server Connection Section -->
-    <section class="server-section" id="status">
-      <div class="wrap server-layout">
-        <div class="server-copy">
-          <span class="eyebrow">READY WHEN YOU ARE / 08</span>
-          <h2>Your next login<br>is <em>one click away.</em></h2>
-          <p>Add BakaCrew to Minecraft Bedrock or launch directly on supported devices.</p>
-
-          <div class="server-status-line">
-            <span class="status-indicator" id="statusIndicator"></span>
-            <strong id="statusLabel">Checking server…</strong>
-            <small id="statusUpdated">Auto refresh · 60 sec</small>
+      <div class="wrap page-body">
+        <div class="community-card">
+          <div class="community-art">
+            <div class="community-orbit"></div>
+            <div class="community-cube">BC</div>
           </div>
-          <p class="maintenance-note hidden" id="maintenanceNote"></p>
-
-          <div class="server-cta-row">
-            <a class="button button-primary" id="connectLaunchBtn" href="minecraft://?addExternalServer=BakaCrew|baka.skyes.me:19205">
-              Add &amp; Launch in Minecraft ↗
-            </a>
-            <button class="button button-outline" id="manualRefreshBtn">↻ Refresh Status</button>
+          <div class="community-copy">
+            <span class="eyebrow">CONNECT WITH THE CREW</span>
+            <h2>Good worlds are<br>built <em>together.</em></h2>
+            <p>Meet fellow Bedrock players, share screenshots, propose ideas, report bugs, and hang out before the 9PM Malaysia Time rush.</p>
+            <div class="community-links" id="communityLinks"></div>
           </div>
         </div>
 
-        <div class="server-connect">
-          <div class="connect-title">
-            <span>SERVER CONNECTION</span>
-            <span class="connect-version" id="connectVersion">BEDROCK</span>
-          </div>
-
-          <div class="connect-field">
-            <label>SERVER NAME</label>
-            <div>
-              <strong id="serverDisplayName">BakaCrew Network</strong>
-              <button data-copy="name">COPY</button>
-            </div>
-          </div>
-
-          <div class="connect-field">
-            <label>SERVER ADDRESS / IP</label>
-            <div>
-              <strong id="serverAddress">baka.skyes.me</strong>
-              <button data-copy="address">COPY</button>
-            </div>
-          </div>
-
-          <div class="connect-row">
-            <div class="connect-field">
-              <label>BEDROCK PORT</label>
+        <div class="community-split">
+          <div class="event-box">
+            <div class="portal-block-head">
               <div>
-                <strong id="serverPort">19205</strong>
-                <button data-copy="port">COPY</button>
+                <span class="eyebrow">CALENDAR · MYT (GMT+8)</span>
+                <h2>Upcoming Events</h2>
               </div>
             </div>
-            <div class="connect-field">
-              <label>PLAYERS ONLINE</label>
-              <div>
-                <strong id="serverPlayers">—</strong>
-              </div>
-            </div>
+            <div class="event-list" id="eventList"></div>
           </div>
 
-          <div class="connect-footer">
-            <span id="serverMessage">Connecting to status provider…</span>
-            <span>MC BEDROCK</span>
-          </div>
+          <div class="poll-box" id="communityPollWidget"></div>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- Footer -->
+  <!-- Global Footer -->
   <footer class="site-footer">
     <div class="wrap footer-main">
-      <a class="brand footer-brand" href="#home">
+      <a class="brand footer-brand" href="#/home" data-page="home">
         <img src="./bakacrew-logo.png" onerror="this.style.display='none'" alt="">
         <span>BAKA<span>CREW</span><small>BEDROCK NETWORK</small></span>
       </a>
       <div class="footer-nav">
-        <a href="#games">Experiences</a>
-        <a href="#telemetry">9PM Stats</a>
-        <a href="#wiki">Guide</a>
-        <a href="#leaderboard">Players</a>
-        <a href="#news">News</a>
-        <a href="#status">Server</a>
+        <a href="#/home" data-page="home">Home</a>
+        <a href="#/games" data-page="games">Games</a>
+        <a href="#/telemetry" data-page="telemetry">9PM Stats</a>
+        <a href="#/news" data-page="news">News</a>
+        <a href="#/leaderboards" data-page="leaderboards">Leaderboards</a>
+        <a href="#/wiki" data-page="wiki">Rules &amp; Guide</a>
+        <a href="#/community" data-page="community">Community</a>
         <button id="adminOpen">Admin</button>
       </div>
-      <a class="back-top" href="#home">BACK TO TOP ↑</a>
+      <button class="back-top" id="backTopBtn">BACK TO TOP ↑</button>
     </div>
     <div class="wrap footer-bottom">
       <span>© <span id="year"></span> BakaCrew Network. Built for the community.</span>
@@ -432,11 +524,11 @@
 
   <!-- Mobile Bottom Dock -->
   <div class="mobile-dock">
-    <a href="#games">◈<small>Games</small></a>
-    <a href="#telemetry">▤<small>9PM Stats</small></a>
-    <a href="#status" class="dock-play">▶<small>Play</small></a>
-    <a href="#wiki">✦<small>Guide</small></a>
-    <a href="#news">◎<small>News</small></a>
+    <a href="#/home" data-page="home">⌂<small>Home</small></a>
+    <a href="#/games" data-page="games">◈<small>Games</small></a>
+    <a href="#/telemetry" data-page="telemetry" class="dock-play">▤<small>9PM Stats</small></a>
+    <a href="#/news" data-page="news">✦<small>News</small></a>
+    <a href="#/wiki" data-page="wiki">◎<small>Guide</small></a>
   </div>
 
   <!-- Experience / News Detail Modal -->
@@ -449,7 +541,7 @@
       <p id="detailBody"></p>
       <ul class="detail-highlights hidden" id="detailHighlights"></ul>
       <div class="detail-actions">
-        <a class="button button-primary" id="detailActionBtn" href="#status">Join Server ↗</a>
+        <a class="button button-primary" id="detailActionBtn" href="minecraft://?addExternalServer=BakaCrew|baka.skyes.me:19205">Launch Minecraft ↗</a>
         <button class="button button-outline-dark" data-close-detail>Close</button>
       </div>
     </div>
@@ -481,4 +573,107 @@
       <div class="dash-tabs">
         <button class="tab active" data-tab="general">General</button>
         <button class="tab" data-tab="telemetryTab">9PM Stats</button>
-        <button class="tab"
+        <button class="tab" data-tab="gamesTab">Games</button>
+        <button class="tab" data-tab="playersTab">Players</button>
+        <button class="tab" data-tab="newsTab">News</button>
+        <button class="tab" data-tab="eventsTab">Events</button>
+        <button class="tab" data-tab="linksTab">Links</button>
+        <button class="tab" data-tab="backupTab">Backup</button>
+      </div>
+
+      <div class="tab-pane" id="general">
+        <form id="settingsForm" class="admin-form">
+          <label>Server address<input id="editAddress" required></label>
+          <label>Bedrock port<input id="editPort" type="number" min="1" max="65535" required></label>
+          <label>Announcement bar<input id="editAnnouncement"></label>
+          <label>Server name<input id="editName"></label>
+          <label class="check"><input id="editMaintenance" type="checkbox"> Show maintenance notice</label>
+          <label>Maintenance message<input id="editMaintenanceText"></label>
+          <button class="button button-primary">Save settings</button>
+        </form>
+      </div>
+
+      <div class="tab-pane hidden" id="telemetryTab">
+        <form id="telemetryForm" class="admin-form">
+          <label>Date (MYT YYYY-MM-DD)<input id="teleDate" type="date" required></label>
+          <label>Players at 9:00 PM MYT<input id="telePlayers" type="number" min="0" max="9999" required></label>
+          <label>Note / peak context<input id="teleNote" placeholder="e.g. Weekend build session"></label>
+          <div class="inline-actions">
+            <button class="button button-primary" type="submit">Save 9PM MYT Record</button>
+            <button class="button button-outline-dark" type="button" id="adminLiveCaptureBtn">Capture Live Now</button>
+          </div>
+        </form>
+        <div id="manageTelemetry" class="manage-list"></div>
+      </div>
+
+      <div class="tab-pane hidden" id="gamesTab">
+        <form id="gameForm" class="admin-form">
+          <label>Game / experience name<input id="gameName" required></label>
+          <label>Short description<input id="gameDescription" required></label>
+          <label>Category<input id="gameCategory" placeholder="ADVENTURE / BUILD / EVENTS / NETWORK"></label>
+          <label>Badge<input id="gameBadge" placeholder="FEATURED / NEW / 9PM MYT"></label>
+          <label>Highlights (comma separated)<input id="gameHighlights" placeholder="Land Claims, Player Shops, Cross-Play"></label>
+          <button class="button button-primary">Add experience</button>
+        </form>
+        <div id="manageGames" class="manage-list"></div>
+      </div>
+
+      <div class="tab-pane hidden" id="playersTab">
+        <form id="playerForm" class="admin-form">
+          <label>Player name<input id="playerName" required></label>
+          <label>Highlight / role<input id="playerRole" placeholder="Builder / Community MVP"></label>
+          <label>Score / label<input id="playerScore" placeholder="Top Builder"></label>
+          <button class="button button-primary">Add player highlight</button>
+        </form>
+        <div id="managePlayers" class="manage-list"></div>
+        <p class="admin-hint">These are curated community highlights, not automatically fetched Minecraft statistics.</p>
+      </div>
+
+      <div class="tab-pane hidden" id="newsTab">
+        <form id="newsForm" class="admin-form">
+          <label>News title<input id="newsTitle" required></label>
+          <label>Category<input id="newsCategory" placeholder="UPDATE / EVENT / WELCOME"></label>
+          <label>Summary<textarea id="newsBody" rows="3" required></textarea></label>
+          <button class="button button-primary">Publish news</button>
+        </form>
+        <div id="manageNews" class="manage-list"></div>
+      </div>
+
+      <div class="tab-pane hidden" id="eventsTab">
+        <form id="eventForm" class="admin-form">
+          <label>Event name<input id="eventTitle" required></label>
+          <label>Date<input id="eventDate" type="date" required></label>
+          <label>Details<input id="eventDetails" placeholder="9:00 PM MYT · Event description"></label>
+          <button class="button button-primary">Add event</button>
+        </form>
+        <div id="manageEvents" class="manage-list"></div>
+      </div>
+
+      <div class="tab-pane hidden" id="linksTab">
+        <form id="linksForm" class="admin-form">
+          <label>Discord / community URL<input id="linkDiscord" type="url" placeholder="https://discord.gg/..."></label>
+          <label>Store URL<input id="linkStore" type="url" placeholder="https://..."></label>
+          <label>Rules URL<input id="linkRules" type="url" placeholder="https://..."></label>
+          <label>Support URL<input id="linkSupport" type="url" placeholder="https://..."></label>
+          <button class="button button-primary">Save links</button>
+        </form>
+      </div>
+
+      <div class="tab-pane hidden" id="backupTab">
+        <h3>Content &amp; Telemetry Backup</h3>
+        <p class="admin-hint">Export your portal content and 9PM MYT statistics as JSON, or restore a previous backup.</p>
+        <button class="button button-primary" id="exportBtn">Export JSON backup ↓</button>
+        <label class="import-label">Import JSON backup ↑<input id="importFile" type="file" accept=".json,application/json" hidden></label>
+      </div>
+
+      <div class="dash-footer">
+        <span id="saveStatus">Saved locally in this browser</span>
+        <button id="logoutBtn">Log out</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
