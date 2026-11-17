@@ -1,5 +1,5 @@
 import {
-    auth as firebaseAuth,
+  auth as firebaseAuth,
   db,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -116,40 +116,241 @@ import {
     toastTimer = setTimeout(() => t.classList.remove("show"), 2800);
   }
 
-  function api(action, p = {}) {
-    const cfg = getConfig();
-    const u = cfg.API_URL;
-    if (!u || u.includes("PASTE_")) {
-      return Promise.reject(new Error("Configure Apps Script URL in config.js first."));
-    }
-    return new Promise((ok, no) => {
-      const cb = "bc" + Date.now() + Math.floor(Math.random() * 9999);
-      const sc = document.createElement("script");
-      const tm = setTimeout(() => {
-        clean();
-        no(new Error("API timeout. Check Apps Script deployment."));
-      }, 15000);
-      function clean() {
-        clearTimeout(tm);
-        delete window[cb];
-        sc.remove();
+  async function api(action, p = {}) {
+    const current = firebaseAuth.currentUser;
+    const profileRef = current ? doc(db, "users", current.uid) : null;
+    const profileSnap = profileRef ? await getDoc(profileRef) : null;
+    const profile = profileSnap?.exists() ? profileSnap.data() : null;
+    const requireLogin = () => {
+      if (!current) throw new Error("Please sign in to continue.");
+      if (profile && String(profile.status || "ACTIVE").toUpperCase() !== "ACTIVE") {
+        throw new Error("Your account is suspended.");
       }
-      window[cb] = r => {
-        clean();
-        r && r.ok ? ok(r.data) : no(new Error((r && r.error) || "API error"));
-      };
-      sc.onerror = () => {
-        clean();
-        no(new Error("Cannot connect to Apps Script."));
-      };
-      const q = new URLSearchParams({
-        action,
-        callback: cb,
-        payload: JSON.stringify({ ...p, token: S.token })
-      });
-      sc.src = u + (u.includes("?") ? "&" : "?") + q;
-      document.body.append(sc);
-    });
+      return current;
+    };
+    const rows = async name => {
+      const snap = await getDocs(collection(db, name));
+      return snap.docs.map(item => ({ id: item.id, ...item.data() }));
+    };
+    const dateText = value => {
+      if (!value) return "";
+      const date = value.toDate ? value.toDate() : new Date(value);
+      return Number.isNaN(date.getTime()) ? String(value) :
+        date.toLocaleDateString("en-MY", { day: "2-digit", month: "short", year: "numeric" });
+    };
+    const timeText = value => {
+      if (!value) return "Just now";
+      const date = value.toDate ? value.toDate() : new Date(value);
+      if (Number.isNaN(date.getTime())) return String(value);
+      const mins = Math.max(0, Math.floor((Date.now() - date.getTime()) / 60000));
+      if (mins < 1) return "Just now";
+      if (mins < 60) return `${mins}m ago`;
+      if (mins < 1440) return `${Math.floor(mins / 60)}h ago`;
+      return `${Math.floor(mins / 1440)}d ago`;
+    };
+    const active = list => list.filter(x =>
+      !["hidden", "draft", "deleted", "suspended"].includes(String(x.status || "published").toLowerCase())
+    );
+
+    switch (action) {
+      case "register": {
+        const email = String(p.email || "").trim().toLowerCase();
+        const displayName = String(p.displayName || "").trim();
+        if (!email || !displayName) throw new Error("Enter your name and email address.");
+        const credential = await createUserWithEmailAndPassword(firebaseAuth, email, p.password);
+        await updateProfile(credential.user, { displayName });
+        const user = {
+          uid: credential.user.uid,
+          displayName,
+          email,
+          username: email.split("@")[0],
+          role: "MEMBER",
+          status: "ACTIVE",
+          bio: ""
+        };
+        await setDoc(doc(db, "users", credential.user.uid), {
+          ...user, createdAt: serverTimestamp()
+        });
+        await setDoc(doc(db, "publicProfiles", credential.user.uid), {
+          uid: credential.user.uid, displayName, role: "MEMBER", status: "ACTIVE", bio: ""
+        });
+        return { token: credential.user.uid, user };
+      }
+      case "login": {
+        const email = String(p.email || "").trim().toLowerCase();
+        const credential = await signInWithEmailAndPassword(firebaseAuth, email, p.password);
+        const snap = await getDoc(doc(db, "users", credential.user.uid));
+        const user = snap.exists() ? { uid: credential.user.uid, ...snap.data() } : {
+          uid: credential.user.uid,
+          displayName: credential.user.displayName || email.split("@")[0],
+          email, username: email.split("@")[0], role: "MEMBER", status: "ACTIVE", bio: ""
+        };
+        if (String(user.status || "ACTIVE").toUpperCase() !== "ACTIVE") {
+          await signOut(firebaseAuth);
+          throw new Error("This account is suspended. Please contact an administrator.");
+        }
+        if (!snap.exists()) await setDoc(doc(db, "users", credential.user.uid), {
+          ...user, createdAt: serverTimestamp()
+        });
+        await setDoc(doc(db, "publicProfiles", credential.user.uid), {
+          uid: credential.user.uid, displayName: user.displayName, role: user.role,
+          status: user.status, bio: user.bio || ""
+        }, { merge: true });
+        return { token: credential.user.uid, user };
+      }
+      case "updateProfile": {
+        requireLogin();
+        const displayName = String(p.displayName || "").trim();
+        await updateProfile(current, { displayName });
+        const bio = String(p.bio || "").slice(0, 300);
+        await updateDoc(profileRef, { displayName, bio });
+        await setDoc(doc(db, "publicProfiles", current.uid), { displayName, bio }, { merge: true });
+        return { user: { ...profile, displayName, bio } };
+      }
+      case "getPublicData": {
+        const [announcements, posts, news, events, products, users] = await Promise.all([
+          rows("announcements"), rows("posts"), rows("news"), rows("events"), rows("products"), rows("publicProfiles")
+        ]);
+        const visibleUsers = users.filter(u => String(u.status || "ACTIVE").toUpperCase() === "ACTIVE");
+        const sortNewest = list => active(list).sort((a, b) =>
+          (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+        return {
+          stats: {
+            members: visibleUsers.length,
+            posts: sortNewest(posts).length,
+            events: active(events).length
+          },
+          announcements: sortNewest(announcements).map(a => ({
+            ...a, date: dateText(a.createdAt), body: a.body || a.content || ""
+          })),
+          posts: sortNewest(posts).map(post => ({
+            ...post, author: post.authorName || post.author || "BakaCrew Member",
+            body: post.body || post.content || "",
+            likes: Number(post.likesCount ?? post.likes ?? 0),
+            createdAt: timeText(post.createdAt)
+          })),
+          news: sortNewest(news).map(n => ({
+            ...n, date: dateText(n.createdAt || n.date),
+            summary: n.summary || n.content || n.body || "",
+            body: n.body || n.content || n.summary || ""
+          })),
+          events: active(events).map(event => {
+            const dt = event.eventDate?.toDate ? event.eventDate.toDate() : new Date(event.eventDate || event.date || "");
+            return {
+              ...event,
+              day: event.day || (Number.isNaN(dt.getTime()) ? "--" : dt.toLocaleDateString("en", { day: "2-digit" })),
+              month: event.month || (Number.isNaN(dt.getTime()) ? "TBA" : dt.toLocaleDateString("en", { month: "short" }).toUpperCase()),
+              location: event.location || "To be announced",
+              description: event.description || event.content || ""
+            };
+          }),
+          products: active(products).map(product => ({
+            ...product, name: product.name || product.title || "Untitled product",
+            price: typeof product.price === "number" ? `RM ${product.price.toFixed(2)}` : (product.price || "Enquire")
+          })),
+          members: visibleUsers.map(user => ({
+            name: user.displayName || "BakaCrew Member", role: user.role || "MEMBER", bio: user.bio || ""
+          }))
+        };
+      }
+      case "getComments": {
+        requireLogin();
+        const snap = await getDocs(query(collection(db, "comments"), where("postId", "==", p.postId)));
+        const comments = snap.docs.map(item => ({ id: item.id, ...item.data() }))
+          .filter(c => String(c.status || "published").toLowerCase() === "published")
+          .sort((a, b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0))
+          .map(c => ({ ...c, author: c.authorName || "Member", body: c.content || c.body || "" }));
+        return { comments };
+      }
+      case "createComment": {
+        requireLogin();
+        await addDoc(collection(db, "comments"), {
+          postId: p.postId, authorId: current.uid,
+          authorName: profile?.displayName || current.displayName || "Member",
+          content: String(p.body || "").trim(), status: "published", createdAt: serverTimestamp()
+        });
+        return { ok: true };
+      }
+      case "createPost": {
+        requireLogin();
+        await addDoc(collection(db, "posts"), {
+          title: String(p.title || "").trim(), body: String(p.body || "").trim(),
+          content: String(p.body || "").trim(), category: p.category || "Community",
+          authorId: current.uid, authorName: profile?.displayName || current.displayName || "Member",
+          likesCount: 0, commentsCount: 0, status: "published", createdAt: serverTimestamp()
+        });
+        return { ok: true };
+      }
+      case "likePost": {
+        requireLogin();
+        const likeId = `${p.postId}_${current.uid}`;
+        const likeRef = doc(db, "likes", likeId);
+        const existing = await getDoc(likeRef);
+        if (existing.exists()) {
+          await deleteDoc(likeRef);
+          await updateDoc(doc(db, "posts", p.postId), { likesCount: increment(-1) });
+        } else {
+          await setDoc(likeRef, { postId: p.postId, userId: current.uid, createdAt: serverTimestamp() });
+          await updateDoc(doc(db, "posts", p.postId), { likesCount: increment(1) });
+        }
+        return { ok: true };
+      }
+      case "createOrder": {
+        requireLogin();
+        const productSnap = await getDoc(doc(db, "products", p.productId));
+        const product = productSnap.exists() ? productSnap.data() : {};
+        await addDoc(collection(db, "orders"), {
+          productId: p.productId, productName: product.name || product.title || "Product",
+          userId: current.uid, username: profile?.displayName || current.displayName || "Member",
+          email: current.email || "", quantity: Number(p.quantity),
+          note: String(p.note || ""), status: "NEW", createdAt: serverTimestamp()
+        });
+        return { ok: true };
+      }
+      case "adminGetData": {
+        requireLogin();
+        if (!["SUPER_ADMIN", "ADMIN", "MODERATOR"].includes(String(profile?.role || "").toUpperCase())) {
+          throw new Error("Administrator access required.");
+        }
+        const [users, posts, orders] = await Promise.all([rows("users"), rows("posts"), rows("orders")]);
+        return { users, posts: posts.map(post => ({ ...post, author: post.authorName || post.author || "Member" })),
+          orders, stats: { members: users.length, posts: posts.length, orders: orders.length } };
+      }
+      case "adminSetUserStatus": {
+        requireLogin();
+        if (!["SUPER_ADMIN", "ADMIN"].includes(String(profile?.role || "").toUpperCase())) throw new Error("Administrator access required.");
+        await updateDoc(doc(db, "users", p.userId), { status: p.status });
+        return { ok: true };
+      }
+      case "adminSetPostStatus": {
+        requireLogin();
+        if (!["SUPER_ADMIN", "ADMIN", "MODERATOR"].includes(String(profile?.role || "").toUpperCase())) throw new Error("Moderator access required.");
+        await updateDoc(doc(db, "posts", p.postId), { status: "hidden" });
+        return { ok: true };
+      }
+      case "adminSetOrderStatus": {
+        requireLogin();
+        if (!["SUPER_ADMIN", "ADMIN"].includes(String(profile?.role || "").toUpperCase())) throw new Error("Administrator access required.");
+        await updateDoc(doc(db, "orders", p.orderId), { status: p.status });
+        return { ok: true };
+      }
+      case "adminCreateContent": {
+        requireLogin();
+        if (!["SUPER_ADMIN", "ADMIN", "MODERATOR"].includes(String(profile?.role || "").toUpperCase())) throw new Error("Administrator access required.");
+        const map = { News: "news", Announcement: "announcements", Event: "events", Product: "products" };
+        const name = map[p.type];
+        if (!name) throw new Error("Unknown content type.");
+        const fields = { ...(p.fields || {}) };
+        if (p.type === "Event" && fields.date) fields.eventDate = new Date(fields.date);
+        delete fields.date;
+        await addDoc(collection(db, name), {
+          ...fields, status: "published", createdAt: serverTimestamp(), createdBy: current.uid
+        });
+        return { ok: true };
+      }
+      default:
+        throw new Error(`Unsupported Firebase action: ${action}`);
+    }
   }
 
   function show(html) {
@@ -227,10 +428,10 @@ import {
     show(`
       <label class="badge" style="margin-bottom:10px">${ICONS.shield} COMMUNITY ACCESS</label>
       <h2>${reg ? "Join BakaCrew" : "Welcome back"}</h2>
-      <p class="muted">${reg ? "Create your official member account." : "Sign in with your community credentials."}</p>
+      <p class="muted">${reg ? "Create your official member account." : "Sign in with your registered email address."}</p>
       <form id="authForm">
         ${reg ? '<div class="field"><label>Display name</label><input name="displayName" required placeholder="e.g. Aiman Hakim"></div>' : ""}
-        <div class="field"><label>Username</label><input name="username" required minlength="3" placeholder="username"></div>
+        <div class="field"><label>Email address</label><input name="email" type="email" required placeholder="name@example.com" autocomplete="email"></div>
         <div class="field"><label>Password</label><input name="password" type="password" required minlength="8" placeholder="Minimum 8 characters"></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px">
           <button class="primary">${reg ? "Create account" : "Sign in"}</button>
@@ -307,12 +508,7 @@ import {
     $("#login").onclick = () => (S.user ? editMemberProfile() : auth(false));
     $("#join").onclick = () => {
       if (S.user) {
-        S.token = "";
-        S.user = null;
-        localStorage.removeItem("bc_token");
-        localStorage.removeItem("bc_user");
-        updateAuth();
-        toast("Signed out securely.");
+        signOut(firebaseAuth).catch(error => toast(error.message, "err"));
       } else {
         auth(true);
       }
@@ -489,7 +685,7 @@ import {
       const q = S.memberSearch.trim().toLowerCase();
       mems = mems.filter(m => [m.name, m.role].some(v => String(v || "").toLowerCase().includes(q)));
     }
-    $("#memberGrid").innerHTML = mems.map((m, idx) => {
+    S.visibleMembers = mems;\n    $("#memberGrid").innerHTML = mems.map((m, idx) => {
       const isLeader = ["SUPER_ADMIN", "ADMIN", "MODERATOR"].includes(String(m.role || "").toUpperCase());
       return `
         <article class="member-card" data-member-idx="${idx}">
@@ -807,7 +1003,7 @@ import {
   $("#memberGrid").addEventListener("click", e => {
     const card = e.target.closest("[data-member-idx]");
     if (!card || !S.data) return;
-    const m = S.data.members[Number(card.dataset.memberIdx)];
+    const m = (S.visibleMembers || S.data.members)[Number(card.dataset.memberIdx)];
     if (!m) return;
     show(`
       <div class="author-wrap" style="margin-bottom:14px">
@@ -1095,8 +1291,54 @@ import {
     }
   }
 
-  $("#analyticsLink").href = getConfig().ANALYTICS_URL || "#";
+  $("#analyticsLink").href = (window.BAKACREW_CONFIG && window.BAKACREW_CONFIG.ANALYTICS_URL) || "#";
   $("#year").textContent = new Date().getFullYear();
-  updateAuth();
-  refresh();
-})();
+
+  onAuthStateChanged(firebaseAuth, async user => {
+    if (!user) {
+      S.token = "";
+      S.user = null;
+      updateAuth();
+      await refresh();
+      return;
+    }
+    try {
+      const profileRef = doc(db, "users", user.uid);
+      let profileSnap = await getDoc(profileRef);
+      if (!profileSnap.exists()) {
+        const newProfile = {
+          uid: user.uid,
+          displayName: user.displayName || user.email?.split("@")[0] || "Member",
+          email: user.email || "",
+          username: user.email?.split("@")[0] || "",
+          role: "MEMBER", status: "ACTIVE", bio: "",
+          createdAt: serverTimestamp()
+        };
+        await setDoc(profileRef, newProfile);
+        await setDoc(doc(db, "publicProfiles", user.uid), {
+          uid: user.uid, displayName: newProfile.displayName, role: "MEMBER", status: "ACTIVE", bio: ""
+        });
+        profileSnap = await getDoc(profileRef);
+      }
+      S.token = user.uid;
+      S.user = { uid: user.uid, ...profileSnap.data() };
+      await setDoc(doc(db, "publicProfiles", user.uid), {
+        uid: user.uid, displayName: S.user.displayName || "Member",
+        role: S.user.role || "MEMBER", status: S.user.status || "ACTIVE",
+        bio: S.user.bio || ""
+      }, { merge: true });
+      if (String(S.user.status || "ACTIVE").toUpperCase() !== "ACTIVE") {
+        await signOut(firebaseAuth);
+        toast("Your account is suspended.", "err");
+        return;
+      }
+      updateAuth();
+      await refresh();
+    } catch (error) {
+      console.error("Firebase profile error:", error);
+      S.user = null;
+      updateAuth();
+      toast(error.message, "err");
+      await refresh();
+    }
+  });
