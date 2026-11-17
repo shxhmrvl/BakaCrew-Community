@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#081b2b"><meta name="description" content="BakaCrew Bedrock Network — play, build and connect.">
+<title>BakaCrew Network</title><link rel="icon" href="./bakacrew-logo.png"><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="announcement" id="announcement"><span class="announce-dot"></span><span id="announcementText">WELCOME TO BAKACREW NETWORK</span><a href="#news">Explore updates <b>↗</b></a><button id="dismissAnnouncement" aria-label="Dismiss">×</button></div>
+<header class="site-header">
+ <a class="brand" href="#home"><img src="./bakacrew-logo.png" onerror="this.style.display='none'" alt="BakaCrew logo"><span>BAKA<span>CREW</span><small>BEDROCK NETWORK</small></span></a>
+ <nav class="desktop-nav"><a href="#games">Games</a><a href="#leaderboard">Leaderboard</a><a href="#news">News</a><a href="#community">Community</a><a href="#status">Server</a></nav>
+ <div class="header-actions"><button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">☼</button><a class="header-play" href="#status">Play now <b>↗</b></a><button class="menu-toggle" id="menuToggle" aria-label="Open menu">☰</button></div>
+</header>
+<div class="mobile-menu hidden" id="mobileMenu"><a href="#games">Games</a><a href="#leaderboard">Leaderboard</a><a href="#news">News</a><a href="#events">Events</a><a href="#community">Community</a><a href="#status">Server</a><button id="mobileAdmin">Admin access</button></div>
+<main id="home">
+<section class="hero">
+ <div class="hero-bg-grid"></div><div class="hero-content">
+  <div class="eyebrow"><span class="live-dot"></span> MINECRAFT BEDROCK NETWORK <span class="eyebrow-line"></span> EST. COMMUNITY</div>
+  <h1>FIND YOUR<br><em>CREW.</em> BUILD<br>YOUR <em>WORLD.</em></h1>
+  <p class="hero-lead">A world built around the people who play it. Discover new adventures, meet your people and make every session count.</p>
+  <div class="hero-ctas"><a class="button button-primary" href="#status">Join BakaCrew <span>↗</span></a><a class="button button-outline" href="#games">Explore network <span>↓</span></a></div>
+  <div class="hero-meta"><span><i class="tiny-check"></i> BEDROCK EDITION</span><span><i class="tiny-check"></i> COMMUNITY FIRST</span><span><i class="tiny-check"></i> ALWAYS EVOLVING</span></div>
+ </div>
+ <div class="hero-visual"><div class="visual-glow"></div><div class="visual-ring ring-a"></div><div class="visual-ring ring-b"></div><div class="pixel-emblem"><div class="emblem-top"></div><strong>BC</strong><small>NETWORK</small></div><div class="float-chip chip-top">✦ PLAY TOGETHER</div><div class="float-chip chip-side">BEDROCK<br><b>EDITION</b></div><div class="float-chip chip-bottom"><span class="live-dot"></span> COMMUNITY ONLINE</div><div class="visual-coord">01 / BAKACREW WORLD</div></div>
+ <div class="hero-bottom"><span>YOUR NEXT ADVENTURE STARTS HERE</span><span>SCROLL TO EXPLORE ↓</span></div>
+</section>
+<section class="quick-stats wrap">
+ <div class="stat-intro"><span class="eyebrow">THE NETWORK</span><strong>One address.<br>Many memories.</strong></div>
+ <div class="quick-stat"><span class="stat-icon">◉</span><small>NETWORK STATUS</small><b id="heroStatus">Checking…</b><span id="heroStatusSub">Bedrock server</span></div>
+ <div class="quick-stat"><span class="stat-icon">♟</span><small>PLAYERS ONLINE</small><b id="heroPlayers">—</b><span>Live server count</span></div>
+ <div class="quick-stat"><span class="stat-icon">⌁</span><small>EDITION</small><b>BEDROCK</b><span>Cross-device play</span></div>
+</section>
+<section class="section wrap" id="games">
+ <div class="section-heading"><div><span class="eyebrow">PICK YOUR ADVENTURE / 01</span><h2>Explore the <em>network.</em></h2><p>Find the experience that fits your playstyle.</p></div><span class="heading-index">01 — 04</span></div>
+ <div class="game-grid" id="gamesGrid"></div>
+</section>
+<section class="leader-section" id="leaderboard"><div class="wrap">
+ <div class="section-heading"><div><span class="eyebrow">COMMUNITY SPOTLIGHT / 02</span><h2>Players making <em>moves.</em></h2><p>Celebrate the people shaping our world.</p></div><span class="heading-index">LEADERBOARD</span></div>
+ <div class="leader-layout"><div class="leader-feature"><span class="feature-kicker">✦ COMMUNITY MVP</span><div class="mvp-avatar" id="mvpAvatar">BC</div><div class="mvp-label">FEATURED PLAYER</div><h3 id="mvpName">BakaCrew Player</h3><p id="mvpDescription">A community highlight. Player rankings can be updated by an admin.</p><span class="mvp-rank">#01 <small>FEATURED</small></span></div>
+ <div class="leader-table-wrap"><div class="table-head"><strong>COMMUNITY RANKINGS</strong><span>CURATED HIGHLIGHTS</span></div><div class="leader-table" id="leaderRows"></div><p class="data-note">Community showcase · Not a live in-game stats feed.</p></div></div>
+</div></section>
+<section class="section wrap" id="news">
+ <div class="section-heading"><div><span class="eyebrow">FRESH FROM THE WORLD / 03</span><h2>Latest <em>intel.</em></h2><p>News, announcements and what’s changing around BakaCrew.</p></div><a class="text-link" href="#events">See events ↗</a></div>
+ <div class="news-grid" id="newsGrid"></div>
+</section>
+<section class="event-band" id="events"><div class="wrap event-layout"><div><span class="eyebrow">GET IT ON YOUR CALENDAR / 04</span><h2>Make room for<br><em>good times.</em></h2><p>Community events, special sessions and shared adventures.</p></div><div class="event-list" id="eventList"></div></div></section>
+<section class="community-section wrap" id="community">
+ <div class="community-card"><div class="community-art"><div class="community-orbit"></div><div class="community-cube">BC</div></div><div class="community-copy"><span class="eyebrow">MORE THAN A SERVER / 05</span><h2>Good worlds are<br>built <em>together.</em></h2><p>Meet fellow players, share ideas, get help and stay close to everything happening in the network.</p><div class="community-links" id="communityLinks"></div></div></div>
+</section>
+<section class="server-section" id="status"><div class="wrap server-layout">
+ <div class="server-copy"><span class="eyebrow">READY WHEN YOU ARE / 06</span><h2>Your next login<br>is <em>one click away.</em></h2><p>Add BakaCrew to Minecraft Bedrock and jump into the world.</p><div class="server-status-line"><span class="status-indicator" id="statusIndicator"></span><strong id="statusLabel">Checking server…</strong><small id="statusUpdated">Auto refresh · 60 sec</small></div><p class="maintenance-note hidden" id="maintenanceNote"></p></div>
+ <div class="server-connect"><div class="connect-title"><span>SERVER CONNECTION</span><span class="connect-version">BEDROCK</span></div><div class="connect-field"><label>SERVER ADDRESS</label><div><strong id="serverAddress">baka.skyes.me</strong><button data-copy="address">COPY</button></div></div><div class="connect-row"><div class="connect-field"><label>PORT</label><div><strong id="serverPort">19205</strong><button data-copy="port">COPY</button></div></div><div class="connect-field"><label>PLAYERS ONLINE</label><div><strong id="serverPlayers">—</strong></div></div></div><div class="connect-footer"><span id="serverMessage">Connecting to status provider…</span><span>MC BEDROCK</span></div></div>
+</div></section>
+<section class="section wrap guide-section"><div class="section-heading"><div><span class="eyebrow">FIRST TIME HERE? / 07</span><h2>Three steps. <em>You're in.</em></h2><p>Getting into BakaCrew is easy.</p></div></div><div class="guide-grid"><article><b>01</b><h3>Open Minecraft</h3><p>Launch Minecraft Bedrock Edition on your device.</p></article><article><b>02</b><h3>Add a server</h3><p>Choose Play, open the Servers tab and select Add Server.</p></article><article><b>03</b><h3>Join the crew</h3><p>Enter the address and port above, save, and connect.</p></article></div></section>
+</main>
+<footer class="site-footer"><div class="wrap footer-main"><a class="brand footer-brand" href="#home"><img src="./bakacrew-logo.png" onerror="this.style.display='none'" alt=""><span>BAKA<span>CREW</span><small>BEDROCK NETWORK</small></span></a><div class="footer-nav"><a href="#games">Games</a><a href="#leaderboard">Players</a><a href="#news">News</a><a href="#status">Server</a><button id="adminOpen">Admin</button></div><a class="back-top" href="#home">BACK TO TOP ↑</a></div><div class="wrap footer-bottom"><span>© <span id="year"></span> BakaCrew Network. Built for the community.</span><span>NOT AFFILIATED WITH MOJANG OR MICROSOFT.</span></div></footer>
+<div class="mobile-dock"><a href="#games">◈<small>Games</small></a><a href="#leaderboard">♜<small>Players</small></a><a href="#status" class="dock-play">▶<small>Play</small></a><a href="#news">▤<small>News</small></a><a href="#community">◎<small>Social</small></a></div>
+<div class="modal hidden" id="adminModal"><div class="modal-card login-card" id="loginPanel"><button class="modal-close" data-close>×</button><span class="eyebrow">BAKACREW CONTROL</span><h2>Admin access</h2><p>Enter your PIN to manage the portal content on this device.</p><form id="loginForm"><input id="pinInput" type="password" inputmode="numeric" maxlength="12" placeholder="Admin PIN" required><button class="button button-primary">Unlock dashboard ↗</button><small class="error" id="loginError"></small></form></div>
+<div class="modal-card dashboard hidden" id="dashboardPanel"><div class="dash-title"><div><span class="eyebrow">NETWORK CONTROL</span><h2>Portal manager</h2></div><button class="modal-close" data-close>×</button></div><div class="dash-tabs"><button class="tab active" data-tab="general">General</button><button class="tab" data-tab="gamesTab">Games</button><button class="tab" data-tab="playersTab">Players</button><button class="tab" data-tab="newsTab">News</button><button class="tab" data-tab="eventsTab">Events</button><button class="tab" data-tab="linksTab">Links</button><button class="tab" data-tab="backupTab">Backup</button></div>
+<div class="tab-pane" id="general"><form id="settingsForm" class="admin-form"><label>Server address<input id="editAddress" required></label><label>Bedrock port<input id="editPort" type="number" min="1" max="65535" required></label><label>Announcement bar<input id="editAnnouncement"></label><label>Server name<input id="editName"></label><label class="check"><input id="editMaintenance" type="checkbox"> Show maintenance notice</label><label>Maintenance message<input id="editMaintenanceText"></label><button class="button button-primary">Save settings</button></form></div>
+<div class="tab-pane hidden" id="gamesTab"><form id="gameForm" class="admin-form"><label>Game / experience name<input id="gameName" required></label><label>Short description<input id="gameDescription" required></label><label>Category<input id="gameCategory" placeholder="SURVIVAL / CREATIVE / EVENT"></label><label>Badge<input id="gameBadge" placeholder="POPULAR / NEW / COMING SOON"></label><button class="button button-primary">Add experience</button></form><div id="manageGames" class="manage-list"></div></div>
+<div class="tab-pane hidden" id="playersTab"><form id="playerForm" class="admin-form"><label>Player name<input id="playerName" required></label><label>Highlight / role<input id="playerRole" placeholder="Builder / Community MVP"></label><label>Score / label<input id="playerScore" placeholder="Top Builder"></label><button class="button button-primary">Add player highlight</button></form><div id="managePlayers" class="manage-list"></div><p class="admin-hint">These are curated community highlights, not automatically fetched Minecraft statistics.</p></div>
+<div class="tab-pane hidden" id="newsTab"><form id="newsForm" class="admin-form"><label>News title<input id="newsTitle" required></label><label>Category<input id="newsCategory" placeholder="ANNOUNCEMENT"></label><label>Summary<textarea id="newsBody" rows="3" required></textarea></label><button class="button button-primary">Publish news</button></form><div id="manageNews" class="manage-list"></div></div>
+<div class="tab-pane hidden" id="eventsTab"><form id="eventForm" class="admin-form"><label>Event name<input id="eventTitle" required></label><label>Date<input id="eventDate" type="date" required></label><label>Details<input id="eventDetails" placeholder="Time · Event description"></label><button class="button button-primary">Add event</button></form><div id="manageEvents" class="manage-list"></div></div>
+<div class="tab-pane hidden" id="linksTab"><form id="linksForm" class="admin-form"><label>Discord / community URL<input id="linkDiscord" type="url" placeholder="https://discord.gg/..."></label><label>Store URL<input id="linkStore" type="url" placeholder="https://..."></label><label>Rules URL<input id="linkRules" type="url" placeholder="https://..."></label><label>Support URL<input id="linkSupport" type="url" placeholder="https://..."></label><button class="button button-primary">Save links</button></form></div>
+<div class="tab-pane hidden" id="backupTab"><h3>Content backup</h3><p class="admin-hint">Export your content as JSON or restore it later. Local edits stay in this browser until you export and publish the updated content with your site files.</p><button class="button button-primary" id="exportBtn">Export JSON backup ↓</button><label class="import-label">Import JSON backup ↑<input id="importFile" type="file" accept=".json,application/json" hidden></label></div>
+<div class="dash-footer"><span id="saveStatus">Saved locally in this browser</span><button id="logoutBtn">Log out</button></div></div></div>
+<div class="toast" id="toast" role="status"></div><script src="app.js"></script>
+</body></html>
