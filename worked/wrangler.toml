@@ -1,0 +1,11 @@
+name = "bakacrew-api"
+main = "src/index.js"
+compatibility_date = "2026-11-17"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "bakacrew-db"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+
+[vars]
+ALLOWED_ORIGIN = "https://shxhmrvl.github.io"
